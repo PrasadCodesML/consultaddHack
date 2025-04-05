@@ -7,9 +7,8 @@ import Providers from "./providers"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "ConsultAI: RFP Analyzer",
+  title: "ConsultAdd: RFP Analyzer",
   description: "Simplify and speed up the process of checking eligibility and compliance for RFPs",
-  generator: 'v0.dev'
 }
 
 export default function RootLayout({

@@ -13,7 +13,7 @@ export default function Navbar() {
       <div className="container mx-auto flex h-16 items-center px-4">
         <Link href="/" className="flex items-center gap-2">
           <FileUpload className="h-6 w-6" />
-          <span className="text-xl font-bold">ConsultAI: RFP Analyzer</span>
+          <span className="text-xl font-bold">ConsultAdd: RFP Analyzer</span>
         </Link>
         <nav className="ml-auto flex gap-4">
           <Link href="/">
