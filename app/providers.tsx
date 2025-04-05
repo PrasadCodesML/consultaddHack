@@ -5,7 +5,14 @@ import React from "react"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+    <ThemeProvider 
+      attribute="class" 
+      defaultTheme="system" 
+      enableSystem
+      disableTransitionOnChange
+      storageKey="rfp-analyzer-theme"
+      forcedTheme="light" // Force light theme initially to match server render
+    >
       {children}
     </ThemeProvider>
   )
