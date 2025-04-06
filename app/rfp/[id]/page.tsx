@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { use, useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -14,6 +14,7 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog"
+import jsPDF from 'jspdf';
 
 interface RFPData {
   name: string
@@ -29,21 +30,33 @@ interface RFPData {
   risks: Array<{ clause: string; risk: string; suggestion: string }>
 }
 
-export default function RFPDetailPage({ params }: { params: { id: string } }) {
+
+export default function RFPDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [rfpData, setRfpData] = useState<RFPData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showRfpDialog, setShowRfpDialog] = useState(false)
   const [activeTab, setActiveTab] = useState("eligibility")
+  const [pdfError, setPdfError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchRFPData = async () => {
       try {
-        const response = await fetch(`/api/rfps/${params.id}`)
+        setLoading(true)
+        setError(null)
+
+        const response = await fetch(`/api/rfps/${id}`)
+        
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          if (response.status === 404) {
+            throw new Error('RFP not found')
+          }
+          throw new Error(`Failed to load RFP data (Status: ${response.status})`)
         }
+
         const data = await response.json()
+        console.log('Fetched RFP data:', data) // Add this for debugging
         setRfpData(data)
         setLoading(false)
       } catch (err) {
@@ -54,45 +67,132 @@ export default function RFPDetailPage({ params }: { params: { id: string } }) {
     }
 
     fetchRFPData()
-  }, [params.id])
+  }, [id])
+
+  // Added function to check if PDF exists before showing dialog
+  const handleShowRfpDialog = async () => {
+    if (!rfpData?.pdfFileName) {
+      setPdfError("No PDF file associated with this RFP")
+      setShowRfpDialog(true)
+      return
+    }
+
+    try {
+      // Verify PDF exists before showing dialog
+      const response = await fetch(`/api/pdf/${rfpData.pdfFileName}`)
+      if (!response.ok) {
+        setPdfError("PDF not found or cannot be accessed")
+      } else {
+        setPdfError(null)
+      }
+      setShowRfpDialog(true)
+    } catch (err) {
+      console.error('Error checking PDF:', err)
+      setPdfError("Error loading PDF file")
+      setShowRfpDialog(true)
+    }
+  }
 
   const handleExportReport = () => {
     if (!rfpData) return
 
-    const reportContent = `
-      RFP ANALYSIS REPORT
-      
-      RFP Name: ${rfpData.name}
-      Company: ${rfpData.company}
-      Status: ${rfpData.status}
-      Date: ${rfpData.date}
-      
-      ELIGIBILITY ASSESSMENT
-      
-      Matched Requirements:
-      ${rfpData.eligibility.matches.map((item) => `- ${item.requirement}`).join("\n")}
-      
-      Unmatched Requirements:
-      ${rfpData.eligibility.mismatches.map((item) => `- ${item.requirement}`).join("\n")}
-      
-      SUBMISSION CHECKLIST
-      
-      ${rfpData.checklist.map((item) => `- ${item.item}: ${item.status.toUpperCase()}`).join("\n")}
-      
-      RISK ANALYSIS
-      
-      ${rfpData.risks.map((item) => `- ${item.clause} (${item.risk} Risk)\n  Suggestion: ${item.suggestion}`).join("\n\n")}
-    `
+    const doc = new jsPDF();
+    
+    // Set font size and styles
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("RFP ANALYSIS REPORT", 20, 20);
+    
+    // Reset font for regular text
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    
+    // Add basic information
+    let yPos = 40;
+    doc.text(`RFP Name: ${rfpData.name}`, 20, yPos);
+    doc.text(`Company: ${rfpData.company}`, 20, yPos + 10);
+    doc.text(`Status: ${rfpData.status}`, 20, yPos + 20);
+    doc.text(`Date: ${rfpData.date}`, 20, yPos + 30);
+    
+    // Add Eligibility Assessment
+    yPos = 90;
+    doc.setFont("helvetica", "bold");
+    doc.text("ELIGIBILITY ASSESSMENT", 20, yPos);
+    doc.setFont("helvetica", "normal");
+    
+    yPos += 10;
+    doc.text("Matched Requirements:", 20, yPos);
+    rfpData.eligibility.matches.forEach((item) => {
+      yPos += 10;
+      if (yPos > 270) { // Check if we need a new page
+        doc.addPage();
+        yPos = 20;
+      }
+      doc.text(`• ${item.requirement}`, 30, yPos);
+    });
+    
+    yPos += 20;
+    if (yPos > 270) {
+      doc.addPage();
+      yPos = 20;
+    }
+    doc.text("Unmatched Requirements:", 20, yPos);
+    rfpData.eligibility.mismatches.forEach((item) => {
+      yPos += 10;
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+      }
+      doc.text(`• ${item.requirement}`, 30, yPos);
+    });
+    
+    // Add Checklist
+    yPos += 20;
+    if (yPos > 270) {
+      doc.addPage();
+      yPos = 20;
+    }
+    doc.setFont("helvetica", "bold");
+    doc.text("SUBMISSION CHECKLIST", 20, yPos);
+    doc.setFont("helvetica", "normal");
+    
+    rfpData.checklist.forEach((item) => {
+      yPos += 10;
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+      }
+      doc.text(`• ${item.item}: ${item.status.toUpperCase()}`, 30, yPos);
+    });
+    
+    // Add Risk Analysis
+    yPos += 20;
+    if (yPos > 270) {
+      doc.addPage();
+      yPos = 20;
+    }
+    doc.setFont("helvetica", "bold");
+    doc.text("RISK ANALYSIS", 20, yPos);
+    doc.setFont("helvetica", "normal");
+    
+    rfpData.risks.forEach((item) => {
+      yPos += 15;
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+      }
+      doc.text(`• ${item.clause} (${item.risk} Risk)`, 30, yPos);
+      yPos += 10;
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+      }
+      doc.text(`  Suggestion: ${item.suggestion}`, 30, yPos);
+    });
 
-    const blob = new Blob([reportContent], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `${rfpData.name.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").toLowerCase()}-report.txt`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    // Save the PDF
+    const fileName = `${rfpData.name.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").toLowerCase()}-report.pdf`;
+    doc.save(fileName);
   }
 
   if (loading) {
@@ -100,7 +200,25 @@ export default function RFPDetailPage({ params }: { params: { id: string } }) {
   }
 
   if (error || !rfpData) {
-    return <div className="container mx-auto py-6">Error: {error || 'Failed to load RFP data'}</div>
+    return (
+      <div className="container mx-auto py-6">
+        <Card>
+          <CardContent className="flex items-center justify-center h-32">
+            <div className="text-center">
+              <AlertTriangle className="h-8 w-8 text-amber-500 mx-auto mb-2" />
+              <p>Error: {error || 'Failed to load RFP data'}</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={() => window.location.reload()}
+              >
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -122,9 +240,10 @@ export default function RFPDetailPage({ params }: { params: { id: string } }) {
               {rfpData.status}
             </Badge>
             <Badge variant="outline">{rfpData.date}</Badge>
+          </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowRfpDialog(true)}>
+          <Button variant="outline" size="sm" onClick={handleShowRfpDialog}>
             <FileText className="h-4 w-4 mr-2" />
             View Original
           </Button>
@@ -269,42 +388,56 @@ export default function RFPDetailPage({ params }: { params: { id: string } }) {
                     </div>
                   </div>
                 </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-        {/* View Original RFP Dialog */}
-        {/* Dialog to preview the original RFP PDF */}
-        <Dialog open={showRfpDialog} onOpenChange={setShowRfpDialog}>
-          <DialogContent className="max-w-4xl h-[80vh]">
-            <DialogHeader>
-              <DialogTitle>Original RFP Document</DialogTitle>
-              <DialogDescription>
-                Preview of the uploaded RFP file.
-              </DialogDescription>
-            </DialogHeader>
-            {rfpData.pdfFileName ? (
+      {/* View Original RFP Dialog */}
+      <Dialog open={showRfpDialog} onOpenChange={setShowRfpDialog}>
+        <DialogContent className="max-w-4xl h-[90vh] p-4">
+          <DialogHeader className="pb-2">
+            <DialogTitle>Original RFP Document</DialogTitle>
+            <DialogDescription className="text-sm">
+              Preview of the uploaded RFP file.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {pdfError ? (
+            <div className="flex flex-col items-center justify-center h-full py-12 text-center">
+              <AlertTriangle className="h-12 w-12 text-amber-500 mb-4" />
+              <p className="text-lg font-medium mb-2">PDF Viewer Error</p>
+              <p className="text-sm text-muted-foreground mb-6">{pdfError}</p>
+              <Button 
+                variant="outline" 
+                onClick={() => handleShowRfpDialog()}
+              >
+                Try Again
+              </Button>
+            </div>
+          ) : rfpData.pdfFileName ? (
+            <div className="flex-1 h-[calc(90vh-80px)]">
               <iframe
                 src={`/api/pdf/${rfpData.pdfFileName}`}
                 title="RFP PDF Preview"
                 className="w-full h-full border rounded"
+                onError={() => setPdfError("Failed to load PDF file")}
               />
-            ) : (
-              <div className="text-center py-10 text-sm text-muted-foreground">
-                No RFP PDF uploaded for this entry.
-              </div>
-            )}
-            <DialogClose asChild>
-              <Button className="absolute right-4 top-4" size="sm" variant="ghost">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </div>
+          ) : (
+            <div className="text-center py-10 text-sm text-muted-foreground">
+              No RFP PDF uploaded for this entry.
+            </div>
+          )}
+          
+          <DialogClose asChild>
+            <Button className="absolute right-4 top-4" size="sm" variant="ghost">
+              Close
+            </Button>
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
-

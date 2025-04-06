@@ -31,14 +31,14 @@ export default function UploadPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!rfpFile || isUploading) return
+
     setIsUploading(true)
-    setProgress(0)
     
     try {
       // Generate unique ID for the RFP
       const rfpId = crypto.randomUUID()
       
-      // Start progress animation
       setProgress(10)
       
       // First, save the PDF file
@@ -46,8 +46,6 @@ export default function UploadPage() {
       pdfFormData.append('file', rfpFile)
       pdfFormData.append('rfpId', rfpId)
       
-      // Save PDF with unique name based on rfpId
-      const pdfFileName = `rfp_${rfpId}.pdf`
       const pdfResponse = await fetch('/api/upload-pdf', {
         method: 'POST',
         body: pdfFormData,
@@ -59,7 +57,7 @@ export default function UploadPage() {
 
       setProgress(30)
 
-      // Now send to analysis API with metadata
+      // Now send to analysis API
       const analysisFormData = new FormData()
       analysisFormData.append('file', rfpFile)
       analysisFormData.append('rfpId', rfpId)
@@ -77,9 +75,9 @@ export default function UploadPage() {
         throw new Error('Analysis failed')
       }
 
-      setProgress(70)
-
       const analysisResult = await analysisResponse.json()
+
+      setProgress(70)
 
       // Save complete RFP data
       const saveResponse = await fetch('/api/save-rfp', {
@@ -93,7 +91,7 @@ export default function UploadPage() {
           company: formRef.current?.['company-name'].value,
           status: "Pending",
           date: new Date().toISOString(),
-          pdfFileName,
+          pdfFileName: `rfp_${rfpId}.pdf`,
           analysis: analysisResult,
         }),
       })
@@ -103,7 +101,7 @@ export default function UploadPage() {
       }
 
       setProgress(100)
-
+      
       // Wait a brief moment to show 100% progress
       await new Promise(resolve => setTimeout(resolve, 500))
       
@@ -224,6 +222,8 @@ export default function UploadPage() {
     </div>
   )
 }
+
+
 
 
 

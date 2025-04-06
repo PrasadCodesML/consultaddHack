@@ -33,23 +33,29 @@ export default function Dashboard() {
     const fetchRFPs = async () => {
       try {
         const response = await fetch('/api/rfps')
+        if (!response.ok) {
+          throw new Error('Failed to fetch RFPs')
+        }
         const data = await response.json()
-        // Ensure data is an array before setting it
-        setRfps(Array.isArray(data) ? data : [])
+        
+        const formattedData = Array.isArray(data) ? data.map((rfp, index) => ({
+          id: rfp.id || `rfp-${index}`, // Fallback ID if none exists
+          rfpName: rfp.name || rfp.rfpName || 'Untitled RFP',
+          companyName: rfp.company || rfp.companyName || 'Unknown Company',
+          status: rfp.status || 'Not Eligible',
+          uploadDate: rfp.date || rfp.uploadDate || new Date().toISOString()
+        })) : []
+        
+        setRfps(formattedData)
       } catch (error) {
         console.error('Failed to fetch RFPs:', error)
-        setRfps([]) // Set to empty array on error
+        setRfps([])
       }
       setLoading(false)
     }
 
     fetchRFPs()
   }, [])
-
-  // Calculate statistics with null checks
-  const totalRfps = Array.isArray(rfps) ? rfps.length : 0
-  const eligibleRfps = Array.isArray(rfps) ? rfps.filter(rfp => rfp?.status === "Eligible").length : 0
-  const notEligibleRfps = Array.isArray(rfps) ? rfps.filter(rfp => rfp?.status === "Not Eligible").length : 0
 
   return (
     <div className="container mx-auto py-6 space-y-8">
@@ -66,42 +72,6 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total RFPs</CardTitle>
-            <FileUpload className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalRfps}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Eligible</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{eligibleRfps}</div>
-            <p className="text-xs text-muted-foreground">
-              {totalRfps > 0 ? `${Math.round((eligibleRfps / totalRfps) * 100)}% success rate` : '0% success rate'}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Not Eligible</CardTitle>
-            <PieChart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{notEligibleRfps}</div>
-            <p className="text-xs text-muted-foreground">
-              {totalRfps > 0 ? `${Math.round((notEligibleRfps / totalRfps) * 100)}% rejection rate` : '0% rejection rate'}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
       <Card>
         <CardHeader>
           <CardTitle>Recent RFP Submissions</CardTitle>
@@ -115,7 +85,7 @@ export default function Dashboard() {
           ) : (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow key="header">
                   <TableHead>RFP Name</TableHead>
                   <TableHead>Company Name</TableHead>
                   <TableHead>Status</TableHead>
@@ -124,8 +94,8 @@ export default function Dashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rfps.map((rfp) => (
-                  <TableRow key={rfp.id}>
+                {rfps.map((rfp, index) => (
+                  <TableRow key={`${rfp.id}-${index}`}>
                     <TableCell className="font-medium">{rfp.rfpName}</TableCell>
                     <TableCell>{rfp.companyName}</TableCell>
                     <TableCell>
@@ -159,10 +129,5 @@ export default function Dashboard() {
     </div>
   )
 }
-
-
-
-
-
 
 

@@ -6,26 +6,28 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
+    const rfpId = formData.get('rfpId') as string
     
-    if (!file) {
+    if (!file || !rfpId) {
       return NextResponse.json(
-        { error: 'No file received' },
+        { error: 'No file or RFP ID received' },
         { status: 400 }
       )
     }
 
     const buffer = Buffer.from(await file.arrayBuffer())
-    const uploadsDir = join(process.cwd(), 'uploads')
+    const pdfDir = join(process.cwd(), 'data', 'pdfs')
     
-    // Create uploads directory if it doesn't exist
+    // Create pdfs directory if it doesn't exist
     try {
-      await mkdir(uploadsDir, { recursive: true })
+      await mkdir(pdfDir, { recursive: true })
     } catch (error) {
       // Directory might already exist
     }
 
-    const filename = `${Date.now()}-${file.name}`
-    await writeFile(join(uploadsDir, filename), buffer)
+    // Use the specified filename from the upload form
+    const filename = `rfp_${rfpId}.pdf`
+    await writeFile(join(pdfDir, filename), buffer)
 
     return NextResponse.json({ success: true, filename })
   } catch (error) {

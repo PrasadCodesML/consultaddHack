@@ -1,0 +1,14 @@
+{
+  "id": "0e8765b2-4012-40ee-bc45-69858e338144",
+  "name": "MHMR",
+  "company": "Temporary Staffing Services",
+  "status": "Pending",
+  "date": "2025-04-06T04:46:00.090Z",
+  "pdfFileName": "rfp_0e8765b2-4012-40ee-bc45-69858e338144.pdf",
+  "eligibility": {
+    "matches": [],
+    "mismatches": []
+  },
+  "checklist": [],
+  "risks": []
+}

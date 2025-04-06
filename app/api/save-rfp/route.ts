@@ -14,27 +14,30 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create data directory if it doesn't exist
+    // Create both directories if they don't exist
     const dataDir = path.join(process.cwd(), 'data', 'rfps')
+    const pdfDir = path.join(process.cwd(), 'data', 'pdfs')
+    
     await mkdir(dataDir, { recursive: true })
+    await mkdir(pdfDir, { recursive: true })
 
     // Save RFP data
     const filePath = path.join(dataDir, `${data.id}.json`)
     await writeFile(
       filePath,
       JSON.stringify({
+        id: data.id,
         name: data.name,
         company: data.company,
         status: data.status || "Pending",
         date: data.date || new Date().toISOString(),
-        pdfFileName: data.pdfFileName,
+        pdfFileName: `rfp_${data.id}.pdf`,
         eligibility: {
           matches: data.analysis?.matches || [],
           mismatches: data.analysis?.mismatches || []
         },
         checklist: data.analysis?.checklist || [],
         risks: data.analysis?.risks || [],
-        rfpName: data.name,
       }, null, 2)
     )
 
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
       id: data.id 
     })
   } catch (error) {
-    console.error('Save RFP error:', error)
+    console.error('Save error:', error)
     return NextResponse.json(
       { error: 'Failed to save RFP data' },
       { status: 500 }
