@@ -29,87 +29,142 @@ export default function UploadPage() {
     }
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
-    setIsUploading(true)
-    setProgress(0)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!rfpFile || !companyFile) {
+      toast({
+        title: "Error",
+        description: "Please select both RFP and company files",
+        variant: "destructive",
+      })
+      return
+    }
 
     try {
       const rfpId = crypto.randomUUID()
       setProgress(10)
+      setIsUploading(true)
       
-      // First, save the PDF file
-      const pdfFormData = new FormData()
-      pdfFormData.append('file', rfpFile)
-      pdfFormData.append('rfpId', rfpId)
+      // Upload files first
+      const formData = new FormData()
+      formData.append('rfpFile', rfpFile)
+      formData.append('companyFile', companyFile)
+      formData.append('rfpId', rfpId)
       
-      const pdfResponse = await fetch('/api/upload-pdf', {
+      const uploadResponse = await fetch('/api/upload-pdf', {
         method: 'POST',
-        body: pdfFormData,
+        body: formData,
       })
 
-      if (!pdfResponse.ok) {
-        throw new Error('Failed to upload PDF')
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload files')
       }
+
+      const uploadResult = await uploadResponse.json()
+      console.log('Upload result:', uploadResult)
 
       setProgress(30)
 
-      // Save initial RFP data
-      const initialSaveResponse = await fetch('/api/save-rfp', {
+      // Save initial RFP data with file names
+      const initialData = {
+        id: rfpId,
+        name: formRef.current?.['rfp-name'].value || 'Untitled RFP',
+        company: formRef.current?.['company-name'].value || 'Unknown Company',
+        status: "Analyzing",
+        date: new Date().toISOString(),
+        pdfFileName: uploadResult.rfpFilename,
+        companyFileName: uploadResult.companyFilename,
+        eligibility: {
+          matches: [],
+          mismatches: [],
+        },
+        checklist: [],
+        risks: []
+      }
+
+      const saveResponse = await fetch('/api/save-rfp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          id: rfpId,
-          name: formRef.current?.['rfp-name'].value,
-          company: formRef.current?.['company-name'].value,
-          status: "Analyzing",
-          date: new Date().toISOString(),
-          pdfFileName: `rfp_${rfpId}.pdf`,
-          eligibility: {
-            matches: [],
-            mismatches: [],
-          }
-        }),
+        body: JSON.stringify(initialData),
       })
 
-      if (!initialSaveResponse.ok) {
+      if (!saveResponse.ok) {
         throw new Error('Failed to save initial RFP data')
       }
 
       setProgress(50)
 
-      // Prepare form data for Hugging Face - Changed field name to 'file'
-      const huggingFaceFormData = new FormData()
-      huggingFaceFormData.append('file', rfpFile) // Changed from 'rfp_pdf' to 'file'
-      
-      // Start Hugging Face analysis
-      const huggingFaceResponse = await fetch('https://prasad8379-gradio-parase.hf.space/analyze-rfp/', {
-        method: 'POST',
-        body: huggingFaceFormData,
-      })
+      // Start Hugging Face analysis in the background
+      const analyzeInBackground = async () => {
+        try {
+          const huggingFaceFormData = new FormData()
+          huggingFaceFormData.append('file', rfpFile)
+          
+          const huggingFaceResponse = await fetch('https://prasad8379-gradio-parase.hf.space/analyze-rfp/', {
+            method: 'POST',
+            body: huggingFaceFormData,
+          })
 
-      if (!huggingFaceResponse.ok) {
-        const errorData = await huggingFaceResponse.json()
-        throw new Error(`Hugging Face analysis failed: ${JSON.stringify(errorData)}`)
+          if (!huggingFaceResponse.ok) {
+            const errorData = await huggingFaceResponse.json()
+            throw new Error(`Hugging Face analysis failed: ${JSON.stringify(errorData)}`)
+          }
+
+          const huggingFaceResult = await huggingFaceResponse.json()
+          
+          // Save the Hugging Face analysis result
+          await fetch('/api/save-analysis', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              rfpId,
+              analysis: huggingFaceResult,
+              timestamp: new Date().toISOString()
+            }),
+          })
+
+          // Update RFP with analysis results
+          await fetch('/api/save-rfp', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: rfpId,
+              status: "Complete",
+              pdfFileName: uploadResult.rfpFilename,
+              companyFileName: uploadResult.companyFilename,
+              aiAnalysis: huggingFaceResult,
+              checklist: formatChecklistFromAnalysis(huggingFaceResult),
+              eligibility: formatEligibilityFromAnalysis(huggingFaceResult)
+            }),
+          })
+
+        } catch (error) {
+          console.error('Background analysis failed:', error)
+          // Update RFP status to indicate failure
+          await fetch('/api/save-rfp', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: rfpId,
+              status: "Analysis Failed",
+            }),
+          })
+        }
       }
 
-      const huggingFaceResult = await huggingFaceResponse.json()
-      
-      // Update RFP with Hugging Face analysis results
-      await fetch('/api/save-rfp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: rfpId,
-          status: "Complete",
-          aiAnalysis: huggingFaceResult
-        }),
-      })
+      // Start background analysis without waiting for it
+      analyzeInBackground()
 
+      // Navigate to RFP page immediately after initial save
       setProgress(100)
       router.push(`/rfp/${rfpId}`)
 
@@ -117,11 +172,31 @@ export default function UploadPage() {
       console.error('Upload error:', error)
       toast({
         title: "Error",
-        description: error.message || "Failed to upload and analyze RFP",
+        description: error.message || "Failed to upload and process files",
         variant: "destructive",
       })
       setIsUploading(false)
-      setProgress(0)
+    }
+  }
+
+  // Helper functions to format the analysis data
+  const formatChecklistFromAnalysis = (analysis: any) => {
+    // Convert the analysis into a hierarchical checklist format
+    return Object.entries(analysis).map(([category, items]: [string, any]) => ({
+      category,
+      items: Array.isArray(items) ? items.map(item => ({
+        item: item.requirement || item.toString(),
+        status: item.status || 'pending',
+        required: item.required || false
+      })) : []
+    }))
+  }
+
+  const formatEligibilityFromAnalysis = (analysis: any) => {
+    // Extract eligibility criteria from the analysis
+    return {
+      matches: analysis.matches || [],
+      mismatches: analysis.mismatches || []
     }
   }
 
@@ -229,6 +304,13 @@ export default function UploadPage() {
     </div>
   )
 }
+
+
+
+
+
+
+
 
 
 

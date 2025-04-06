@@ -15,6 +15,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import jsPDF from 'jspdf';
+import { toast } from "@/components/ui/use-toast";
 
 interface RFPData {
   name: string
@@ -22,6 +23,7 @@ interface RFPData {
   status: string
   date: string
   pdfFileName?: string
+  companyFileName?: string
   eligibility: {
     matches: Array<{ requirement: string; details: string }>
     mismatches: Array<{ requirement: string; details: string }>
@@ -31,49 +33,192 @@ interface RFPData {
 }
 
 export default function RFPDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+  // Unwrap params using React.use()
+  const { id } = use(params)
   const [rfpData, setRfpData] = useState<RFPData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showRfpDialog, setShowRfpDialog] = useState(false)
   const [activeTab, setActiveTab] = useState("eligibility")
   const [pdfError, setPdfError] = useState<string | null>(null)
+  const [isComplianceChecking, setIsComplianceChecking] = useState(false)
+  const [analysisStatus, setAnalysisStatus] = useState(null)
+
+  const handleComplianceCheck = async () => {
+    try {
+      setIsComplianceChecking(true)
+      console.log('Starting compliance check for RFP:', id)
+
+      // First, fetch the latest RFP data to ensure we have updated file paths
+      const latestDataResponse = await fetch(`/api/rfps/${id}`)
+      if (!latestDataResponse.ok) {
+        throw new Error('Failed to fetch latest RFP data')
+      }
+      const latestRfpData = await latestDataResponse.json()
+
+      // Check if files are ready
+      if (!latestRfpData?.pdfFileName || !latestRfpData?.companyFileName) {
+        console.log('Files not ready yet:', {
+          pdfFileName: latestRfpData?.pdfFileName,
+          companyFileName: latestRfpData?.companyFileName
+        })
+        
+        // Wait and retry up to 3 times
+        let retries = 0
+        const maxRetries = 3
+        const retryDelay = 2000 // 2 seconds
+
+        while (retries < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, retryDelay))
+          
+          const retryResponse = await fetch(`/api/rfps/${id}`)
+          if (retryResponse.ok) {
+            const retryData = await retryResponse.json()
+            if (retryData?.pdfFileName && retryData?.companyFileName) {
+              latestRfpData = retryData
+              break
+            }
+          }
+          retries++
+        }
+
+        // If still not ready after retries, show error
+        if (!latestRfpData?.pdfFileName || !latestRfpData?.companyFileName) {
+          toast({
+            title: "Error",
+            description: "Files are still being processed. Please wait a moment and try again.",
+            variant: "destructive",
+          })
+          return
+        }
+      }
+
+      console.log('Sending compliance check request with data:', latestRfpData)
+      const response = await fetch('/api/compliance-check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rfpId: id
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Compliance check API error:', errorData)
+        throw new Error(errorData.error || 'Failed to perform compliance check')
+      }
+
+      const result = await response.json()
+      console.log('Compliance check results:', result)
+
+      // Parse the report string into matches and mismatches
+      const lines = result.report.split('\n').slice(1) // Skip the header line
+      const matches = []
+      const mismatches = []
+
+      lines.forEach(line => {
+        if (line.trim()) {
+          const [requirement, details] = line.split('|')
+          const isMatch = details.includes('✅ Match')
+          
+          const item = {
+            requirement: requirement.trim(),
+            details: details.trim()
+          }
+
+          if (isMatch) {
+            matches.push(item)
+          } else {
+            mismatches.push(item)
+          }
+        }
+      })
+
+      setRfpData(prev => {
+        if (!prev) return prev
+        const updated = {
+          ...prev,
+          eligibility: {
+            ...prev.eligibility,
+            matches,
+            mismatches,
+            rawReport: result.report
+          }
+        }
+        console.log('Updated RFP data:', updated)
+        return updated
+      })
+
+      toast({
+        title: "Success",
+        description: "Compliance check completed successfully",
+      })
+
+    } catch (error) {
+      console.error('Compliance check error:', error)
+      toast({
+        title: "Error",
+        description: error.message || "Failed to perform compliance check",
+        variant: "destructive",
+      })
+    } finally {
+      setIsComplianceChecking(false)
+    }
+  }
+
+  const ComplianceButton = () => (
+    <Button 
+      onClick={handleComplianceCheck} 
+      className="flex items-center gap-2"
+      variant="outline"
+      disabled={isComplianceChecking}
+    >
+      {isComplianceChecking ? (
+        <>
+          <span className="animate-spin">⏳</span>
+          Checking...
+        </>
+      ) : (
+        <>
+          <FileText className="h-4 w-4" />
+          Run Compliance Check
+        </>
+      )}
+    </Button>
+  )
 
   useEffect(() => {
     const fetchRFPData = async () => {
       try {
         setLoading(true)
-        setError(null)
-
         const response = await fetch(`/api/rfps/${id}`)
         
         if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('RFP not found')
-          }
-          throw new Error(`Failed to load RFP data (Status: ${response.status})`)
+          throw new Error('Failed to fetch RFP data')
         }
 
         const data = await response.json()
-        console.log('Fetched RFP data:', data) // Add this for debugging
+        console.log('Fetched RFP data:', data)
         setRfpData(data)
+        setAnalysisStatus(data.status)
         
-        // If status is "Analyzing", poll for updates
+        // If still analyzing, poll for updates
         if (data.status === "Analyzing") {
           const pollInterval = setInterval(async () => {
             const pollResponse = await fetch(`/api/rfps/${id}`)
             if (pollResponse.ok) {
               const updatedData = await pollResponse.json()
               setRfpData(updatedData)
+              setAnalysisStatus(updatedData.status)
               
-              // Stop polling once analysis is complete or failed
               if (["Complete", "Analysis Failed"].includes(updatedData.status)) {
                 clearInterval(pollInterval)
               }
             }
           }, 5000) // Poll every 5 seconds
 
-          // Cleanup interval on unmount
           return () => clearInterval(pollInterval)
         }
       } catch (err) {
@@ -213,6 +358,38 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
     doc.save(fileName);
   }
 
+  const StatusBanner = () => {
+    if (analysisStatus === "Analyzing") {
+      return (
+        <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-md mb-4">
+          <div className="flex items-center gap-2">
+            <div className="animate-spin">⏳</div>
+            <div>
+              <h4 className="font-medium">Analysis in Progress</h4>
+              <p className="text-sm">We're analyzing your RFP. This may take a few minutes for large documents.</p>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    
+    if (analysisStatus === "Analysis Failed") {
+      return (
+        <div className="bg-red-50 dark:bg-red-950/20 p-4 rounded-md mb-4">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-red-500" />
+            <div>
+              <h4 className="font-medium">Analysis Failed</h4>
+              <p className="text-sm">There was an error analyzing your RFP. Please try uploading again.</p>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    
+    return null
+  }
+
   if (loading) {
     return <div className="container mx-auto py-6">Loading...</div>
   }
@@ -241,6 +418,7 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
 
   return (
     <div className="container mx-auto py-6">
+      <StatusBanner />
       <div className="flex justify-between items-start mb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{rfpData.name}</h1>
@@ -287,6 +465,11 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
+                {/* Add the compliance check button at the top */}
+                <div className="flex justify-end mb-4">
+                  <ComplianceButton />
+                </div>
+
                 <div>
                   <h3 className="text-lg font-medium mb-3">Matched Requirements</h3>
                   <div className="space-y-2">

@@ -5,36 +5,48 @@ import { join } from 'path'
 export async function POST(request: Request) {
   try {
     const formData = await request.formData()
-    const file = formData.get('file') as File
+    const rfpFile = formData.get('rfpFile') as File
+    const companyFile = formData.get('companyFile') as File
     const rfpId = formData.get('rfpId') as string
-    
-    if (!file || !rfpId) {
+
+    if (!rfpFile || !companyFile || !rfpId) {
       return NextResponse.json(
-        { error: 'No file or RFP ID received' },
+        { error: 'Missing required files or RFP ID' },
         { status: 400 }
       )
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer())
     const pdfDir = join(process.cwd(), 'data', 'pdfs')
-    
-    // Create pdfs directory if it doesn't exist
-    try {
-      await mkdir(pdfDir, { recursive: true })
-    } catch (error) {
-      // Directory might already exist
-    }
+    await mkdir(pdfDir, { recursive: true })
 
-    // Use the specified filename from the upload form
-    const filename = `rfp_${rfpId}.pdf`
-    await writeFile(join(pdfDir, filename), buffer)
+    // Save RFP file
+    const rfpBuffer = Buffer.from(await rfpFile.arrayBuffer())
+    const rfpFilename = `rfp_${rfpId}.pdf`
+    await writeFile(join(pdfDir, rfpFilename), rfpBuffer)
 
-    return NextResponse.json({ success: true, filename })
+    // Save company file
+    const companyBuffer = Buffer.from(await companyFile.arrayBuffer())
+    const companyFilename = `company_${rfpId}.pdf`
+    await writeFile(join(pdfDir, companyFilename), companyBuffer)
+
+    console.log('Files saved:', {
+      rfpFilename,
+      companyFilename,
+      rfpId
+    })
+
+    return NextResponse.json({
+      success: true,
+      rfpFilename,
+      companyFilename
+    })
   } catch (error) {
     console.error('Upload error:', error)
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { error: 'Failed to upload files' },
       { status: 500 }
     )
   }
 }
+
+

@@ -1,0 +1,783 @@
+{
+  "id": "f1c39b25-c483-4434-bcd4-905d58d33211",
+  "name": "MHMR",
+  "company": "Temporary Staffing Services",
+  "status": "Complete",
+  "date": "2025-04-06T08:45:55.808Z",
+  "pdfFileName": "rfp_f1c39b25-c483-4434-bcd4-905d58d33211.pdf",
+  "companyFileName": "company_f1c39b25-c483-4434-bcd4-905d58d33211.pdf",
+  "eligibility": {
+    "matches": [],
+    "mismatches": []
+  },
+  "checklist": [
+    {
+      "category": "required_documents",
+      "items": [
+        {
+          "item": "HSD Attachment 1, Company Identification Form",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Attachment 2, References and Experience",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD Sample technology audit report from a previous client (with confidential information redacted)",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD Company Identification Form",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposal",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Authorized Signature",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Certification of no 'PARTIES OF INTEREST' or 'CONFLICTS OF INTEREST'",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "E-Verify affidavit",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "OSHA construction safety program documentation",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Client References",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Business Entity Certification",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Enrollment Documentation",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Affidavit of Work Authorization",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Box B documentation",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Box R documentation",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "E-Verify Employment Eligibility Verification page",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "E-Verify Memorandum of Understanding (MOU)",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "E-Verify Memorandum of Understanding (MOU) listing the consultant's/contractor's name and the MOU signature page",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Current, notarized Affidavit of Work Authorization",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "E-Verify documentation",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD FORM B - MBE/WBE Subcontractor Solicitation Form",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "E-Verify Affidavits",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Completed W-9",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "eligibility_criteria",
+      "items": [
+        {
+          "item": "Proposals shall be limited to twelve (12) pages",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Letter of Transmittal signed by a Company officer",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Prior experience in school district information technology audits",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Qualifications of personnel by discipline presently employed",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Unique qualifications that the Company possesses which would be of a benefit to the District",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Recent examples of school information technology audit experience during the last five (5) years",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "References from other School Districts with completed projects in the past five (5) years",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Describe work experience with school districts and information technology audits in the last five (5) years; provide contact names, phone numbers, and e-mail addresses of at least three (3) clients.",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Introduction of your company, history, and qualifications for this project.",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Not an alien unlawfully present in the United States",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Does not currently meet the definition of a business entity as defined in section 285.525, RSMo pertaining to section 285.530, RSMo",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Self-employed individual with no employees",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Company that employs the services of direct sellers as defined in subdivision (17) of subsection 12 of section 288.034, RSMo",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Enroll and participate in the E-Verify federal work authorization program",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Provide documentation affirming enrollment and participation in the E-Verify federal work authorization program",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Submit a completed, notarized Affidavit of Work Authorization",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Meet the definition of a business entity as defined in section 285.525, RSMo, pertaining to section 285.530",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Meets the definition of a business entity as defined in section 285.525, RSMo, pertaining to section 285.530, RSMo",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Enrolled and currently participates in the E-Verify federal work authorization program with respect to the employees hired after enrollment in the program who are proposed to work in connection with the services related to contract(s) with the State of Missouri",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Previously provided documentation to a Missouri state agency or public university that affirms enrollment and participation in the E-Verify federal work authorization program",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Submission of the E-Verify Employment Eligibility Verification page OR a page from the E-Verify Memorandum of Understanding (MOU) listing the consultant's/contractor's name and the MOU signature page completed and signed by the consultant/contractor and the Department of Homeland Security - Verification Division",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Submission of a current, notarized Affidavit of Work Authorization (must be completed, signed, and notarized within the past twelve months)",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "proposal",
+      "items": [
+        {
+          "item": "Proposals may contain restricted data marked with a specific statement",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals shall not contain any restrictive language different from the specified statement",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Code Integrity Warranty: Proposals must warrant and represent that software does not contain disabling procedures",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must abide by the decisions of the District in case of inconsistencies and/or disputes",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "All terms and conditions of this RFP are deemed to be accepted by the Company and incorporated into the Company's Proposal submission",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must be concise and organized",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals shall be limited to twelve (12) pages",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "The Proposal shall include a Letter of Transmittal",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "The Letter of Transmittal should be under the signature of a Company officer",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "The Proposal shall include an Executive Summary",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "The executive summary must be no longer than three (3) pages",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Include names, titles and specific responsibilities of team members",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Clearly indicate the Company's prior experience in school district information technology audits, if applicable",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Give the address of the specific office which will have responsibility for performing the work",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "List the qualifications of personnel by discipline presently employed",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Through narrative discussion, show reason why the Company believes it is especially qualified to undertake this project",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "List recent examples of the Company's school information technology audit experience during the last five (5) years",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Include references from other School Districts with name, address and phone number of contact person",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Firms must fill out the Bid Pricing sheet.",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposers should indicate any areas where the district's information technology could be assessed or improved through an audit process as a separate line item(s) in the pricing page",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Pricing for any additional items not specified in 7.1 through 7.5 should be included as a separate line item(s) in the pricing page",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Introduction of your company, history, and qualifications for this project",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Description of methods and processes to be used in acquiring data",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Description of work experience with school districts and information technology audits in the last five (5) years",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Description of services the firm provides and how those services will benefit the District",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Description of data that will need to be provided by the District to assist in the analysis and projections",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Detailed description of the audit process and methodology with data collection and analysis techniques",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposed timeline for completion of the audit",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "A sample technology audit report from a previous client (with confidential information redacted)",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Responsiveness and completeness of the vendor's proposal, including whether or not the vendor has provided all information requested in the RFP.",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Designate one individual as the Company's representative to the District during the term of the Agreement",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "The undersigned Company hereby agrees to be bound by the terms of the RFP and that the enclosed Proposal is submitted in accordance therewith",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Once completed and returned, this Proposal becomes the primary basis for evaluation and selection of the Company to provide the services required by the District for the specified period",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "By signing this Company Identification Form, the Company certifies that there are no 'PARTIES OF INTEREST' or 'CONFLICTS OF INTEREST', as defined by state and/or federal regulations, existing between the Company and the District or any of its employees, agents or Board of Education members",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "The undersigned hereby acknowledges that the Company has read and agrees to the terms and conditions set forth in the RFP, and that the terms and conditions set forth in the Proposal will remain open for at least 90 days from the deadline for submission of Proposals",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "13.a. Information furnished or disclosed under this RFP shall remain the property of the District and shall be held in confidence by the party",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "14.a. The successful Proposer shall be required to follow all District policies, including those regarding confidentiality of student records",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "17. The vendor shall comply fully with all laws, ordinances, rules, regulations, and orders of any public authority bearing on the performance of the work",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Contractor's Signature is required",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Date is required",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "District's Signature is required",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Notary Public signature is required",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Execution of Contract requires fully executed by both parties",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD FORM B - MBE/WBE Subcontractor Solicitation Form",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposal Response Sheet",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "RFP Proposal",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Agreement for Contracted Services",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "insurance",
+      "items": [
+        {
+          "item": "Comprehensive General Liability (Including Contractual Liability) with $1,000,000 per person per occurrence, $1,000,000 property damage per occurrence, and $1,000,000 aggregate all claims per occurrence",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Workers' Compensation as required by applicable law",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Employer's Liability with $1,000,000 per occurrence",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Automotive Liability with $1,000,000 per occurrence",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Professional Errors and Omissions with $1,000,000 per occurrence",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "supplier_diversity_requirements",
+      "items": [
+        {
+          "item": "MBE/WBE participation",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "HSD FORM B - MBE/WBE Subcontractor Solicitation Form",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "insights",
+      "items": [
+        {
+          "item": "Document contains sections: Request for Proposal - Information Technology Audit Services - 1.0 Purpose, Request for Proposal - Information Technology Audit Services - 2.0 Background /Demographic Information, Request for Proposal - Information Technology Audit Services - 3.0 General Conditions, Request for Proposal - Information Technology Audit Services - 4.0 Proposal Format, Request for Proposal - Information Technology Audit Services - 6.0 Other Information, Request for Proposal - Information Technology Audit Services - 7.0 Scope of Work, Request for Proposal - Information Technology Audit Services - 7.1 Current Technology Landscape Assessment, Request for Proposal - Information Technology Audit Services - 8.0 Proposal Requirements, Request for Proposal - Information Technology Audit Services - 8.1 Deliverables, Request for Proposal - Information Technology Audit Services - 9.0 Award Criteria, Request for Proposal - Information Technology Audit Services - Attachment 1: Company Identification Form, Attachment 2 - References and Experience (Continued) - 9. BILLING & PAYMENT, Attachment 2 - References and Experience (Continued) - 10. INSURANCE, Attachment 2 - References and Experience (Continued) - 13. USE OF INFORMATION, Additional Information - E-Verify, Additional Information - OSHA Training, Additional Information - Client References, BUSINESS ENTITY CERTIFICATION, ENROLLMENT DOCUMENTATION, AND AFFIDAVIT OF WORK AUTHORIZATION - BOX A - CURRENTLY NOT A BUSINESS ENTITY, (Complete the following if you DO NOT have the E-Verify documentation and a current Affidavit of Work Authorization already on file with the State of Missouri. If completing Box B, do not complete Box C.) - BOX B - CURRENT BUSINESS ENTITY STATUS, (Complete the following if you have the E-Verify documentation and a current Affidavit of Work Authorization already on file with the State of Missouri. If completing Box C, do not complete Box B.) - BOX C - AFFIDAVIT ON FILE - CURRENT BUSINESS ENTITY STATUS, (Complete the following if you have the E-Verify documentation and a current Affidavit of Work Authorization already on file with the State of Missouri. If completing Box C, do not complete Box B.) - FOR STATE USE ONLY, AGREEMENT FOR CONTRACTED SERVICES\nHazelwood School District - Note:, PROPOSAL SUBMITTALS - Check List",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "d. Through narrative discussion, show reason why the Company believes it is especially qualified to undertake this project. Discuss any unique qualifications that the Company possesses which would be of a benefit to the District in the execution of this project.",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Indicate any areas where the district's information technology could be assessed or improved through an audit process, including items not specified in 7.1 through 7.5.",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Describe data that will need to be provided by the District to assist in the analysis and projections.",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "A sample technology audit report from a previous client (with confidential information redacted)",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposers understanding of and ability to address the RFP requirements",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Project approach: Logical, organized, innovative understanding, and experience with similar projects",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "required_documents_categorized",
+      "items": []
+    }
+  ],
+  "risks": [],
+  "aiAnalysis": {
+    "required_documents": [
+      "HSD Attachment 1, Company Identification Form",
+      "Attachment 2, References and Experience",
+      "HSD Sample technology audit report from a previous client (with confidential information redacted)",
+      "HSD Company Identification Form",
+      "Proposal",
+      "Authorized Signature",
+      "Certification of no 'PARTIES OF INTEREST' or 'CONFLICTS OF INTEREST'",
+      "E-Verify affidavit",
+      "OSHA construction safety program documentation",
+      "Client References",
+      "Business Entity Certification",
+      "Enrollment Documentation",
+      "Affidavit of Work Authorization",
+      "Box B documentation",
+      "Box R documentation",
+      "E-Verify Employment Eligibility Verification page",
+      "E-Verify Memorandum of Understanding (MOU)",
+      "E-Verify Memorandum of Understanding (MOU) listing the consultant's/contractor's name and the MOU signature page",
+      "Current, notarized Affidavit of Work Authorization",
+      "E-Verify documentation",
+      "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+      "HSD FORM B - MBE/WBE Subcontractor Solicitation Form",
+      "E-Verify Affidavits",
+      "Completed W-9"
+    ],
+    "eligibility_criteria": [
+      "Proposals shall be limited to twelve (12) pages",
+      "Letter of Transmittal signed by a Company officer",
+      "Prior experience in school district information technology audits",
+      "Qualifications of personnel by discipline presently employed",
+      "Unique qualifications that the Company possesses which would be of a benefit to the District",
+      "Recent examples of school information technology audit experience during the last five (5) years",
+      "References from other School Districts with completed projects in the past five (5) years",
+      "Describe work experience with school districts and information technology audits in the last five (5) years; provide contact names, phone numbers, and e-mail addresses of at least three (3) clients.",
+      "Introduction of your company, history, and qualifications for this project.",
+      "Not an alien unlawfully present in the United States",
+      "Does not currently meet the definition of a business entity as defined in section 285.525, RSMo pertaining to section 285.530, RSMo",
+      "Self-employed individual with no employees",
+      "Company that employs the services of direct sellers as defined in subdivision (17) of subsection 12 of section 288.034, RSMo",
+      "Enroll and participate in the E-Verify federal work authorization program",
+      "Provide documentation affirming enrollment and participation in the E-Verify federal work authorization program",
+      "Submit a completed, notarized Affidavit of Work Authorization",
+      "Meet the definition of a business entity as defined in section 285.525, RSMo, pertaining to section 285.530",
+      "Meets the definition of a business entity as defined in section 285.525, RSMo, pertaining to section 285.530, RSMo",
+      "Enrolled and currently participates in the E-Verify federal work authorization program with respect to the employees hired after enrollment in the program who are proposed to work in connection with the services related to contract(s) with the State of Missouri",
+      "Previously provided documentation to a Missouri state agency or public university that affirms enrollment and participation in the E-Verify federal work authorization program",
+      "Submission of the E-Verify Employment Eligibility Verification page OR a page from the E-Verify Memorandum of Understanding (MOU) listing the consultant's/contractor's name and the MOU signature page completed and signed by the consultant/contractor and the Department of Homeland Security - Verification Division",
+      "Submission of a current, notarized Affidavit of Work Authorization (must be completed, signed, and notarized within the past twelve months)"
+    ],
+    "proposal": [
+      "Proposals may contain restricted data marked with a specific statement",
+      "Proposals shall not contain any restrictive language different from the specified statement",
+      "Code Integrity Warranty: Proposals must warrant and represent that software does not contain disabling procedures",
+      "Proposals must abide by the decisions of the District in case of inconsistencies and/or disputes",
+      "All terms and conditions of this RFP are deemed to be accepted by the Company and incorporated into the Company's Proposal submission",
+      "Proposals must be concise and organized",
+      "Proposals shall be limited to twelve (12) pages",
+      "The Proposal shall include a Letter of Transmittal",
+      "The Letter of Transmittal should be under the signature of a Company officer",
+      "The Proposal shall include an Executive Summary",
+      "The executive summary must be no longer than three (3) pages",
+      "Include names, titles and specific responsibilities of team members",
+      "Clearly indicate the Company's prior experience in school district information technology audits, if applicable",
+      "Give the address of the specific office which will have responsibility for performing the work",
+      "List the qualifications of personnel by discipline presently employed",
+      "Through narrative discussion, show reason why the Company believes it is especially qualified to undertake this project",
+      "List recent examples of the Company's school information technology audit experience during the last five (5) years",
+      "Include references from other School Districts with name, address and phone number of contact person",
+      "Firms must fill out the Bid Pricing sheet.",
+      "Proposers should indicate any areas where the district's information technology could be assessed or improved through an audit process as a separate line item(s) in the pricing page",
+      "Pricing for any additional items not specified in 7.1 through 7.5 should be included as a separate line item(s) in the pricing page",
+      "Introduction of your company, history, and qualifications for this project",
+      "Description of methods and processes to be used in acquiring data",
+      "Description of work experience with school districts and information technology audits in the last five (5) years",
+      "Description of services the firm provides and how those services will benefit the District",
+      "Description of data that will need to be provided by the District to assist in the analysis and projections",
+      "Detailed description of the audit process and methodology with data collection and analysis techniques",
+      "Proposed timeline for completion of the audit",
+      "A sample technology audit report from a previous client (with confidential information redacted)",
+      "Responsiveness and completeness of the vendor's proposal, including whether or not the vendor has provided all information requested in the RFP.",
+      "Designate one individual as the Company's representative to the District during the term of the Agreement",
+      "The undersigned Company hereby agrees to be bound by the terms of the RFP and that the enclosed Proposal is submitted in accordance therewith",
+      "Once completed and returned, this Proposal becomes the primary basis for evaluation and selection of the Company to provide the services required by the District for the specified period",
+      "By signing this Company Identification Form, the Company certifies that there are no 'PARTIES OF INTEREST' or 'CONFLICTS OF INTEREST', as defined by state and/or federal regulations, existing between the Company and the District or any of its employees, agents or Board of Education members",
+      "The undersigned hereby acknowledges that the Company has read and agrees to the terms and conditions set forth in the RFP, and that the terms and conditions set forth in the Proposal will remain open for at least 90 days from the deadline for submission of Proposals",
+      "13.a. Information furnished or disclosed under this RFP shall remain the property of the District and shall be held in confidence by the party",
+      "14.a. The successful Proposer shall be required to follow all District policies, including those regarding confidentiality of student records",
+      "17. The vendor shall comply fully with all laws, ordinances, rules, regulations, and orders of any public authority bearing on the performance of the work",
+      "Contractor's Signature is required",
+      "Date is required",
+      "District's Signature is required",
+      "Notary Public signature is required",
+      "Execution of Contract requires fully executed by both parties",
+      "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+      "HSD FORM B - MBE/WBE Subcontractor Solicitation Form",
+      "Proposal Response Sheet",
+      "RFP Proposal",
+      "Agreement for Contracted Services"
+    ],
+    "insurance": [
+      "Comprehensive General Liability (Including Contractual Liability) with $1,000,000 per person per occurrence, $1,000,000 property damage per occurrence, and $1,000,000 aggregate all claims per occurrence",
+      "Workers' Compensation as required by applicable law",
+      "Employer's Liability with $1,000,000 per occurrence",
+      "Automotive Liability with $1,000,000 per occurrence",
+      "Professional Errors and Omissions with $1,000,000 per occurrence"
+    ],
+    "supplier_diversity_requirements": [
+      "MBE/WBE participation",
+      "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+      "HSD FORM B - MBE/WBE Subcontractor Solicitation Form"
+    ],
+    "insights": [
+      "Document contains sections: Request for Proposal - Information Technology Audit Services - 1.0 Purpose, Request for Proposal - Information Technology Audit Services - 2.0 Background /Demographic Information, Request for Proposal - Information Technology Audit Services - 3.0 General Conditions, Request for Proposal - Information Technology Audit Services - 4.0 Proposal Format, Request for Proposal - Information Technology Audit Services - 6.0 Other Information, Request for Proposal - Information Technology Audit Services - 7.0 Scope of Work, Request for Proposal - Information Technology Audit Services - 7.1 Current Technology Landscape Assessment, Request for Proposal - Information Technology Audit Services - 8.0 Proposal Requirements, Request for Proposal - Information Technology Audit Services - 8.1 Deliverables, Request for Proposal - Information Technology Audit Services - 9.0 Award Criteria, Request for Proposal - Information Technology Audit Services - Attachment 1: Company Identification Form, Attachment 2 - References and Experience (Continued) - 9. BILLING & PAYMENT, Attachment 2 - References and Experience (Continued) - 10. INSURANCE, Attachment 2 - References and Experience (Continued) - 13. USE OF INFORMATION, Additional Information - E-Verify, Additional Information - OSHA Training, Additional Information - Client References, BUSINESS ENTITY CERTIFICATION, ENROLLMENT DOCUMENTATION, AND AFFIDAVIT OF WORK AUTHORIZATION - BOX A - CURRENTLY NOT A BUSINESS ENTITY, (Complete the following if you DO NOT have the E-Verify documentation and a current Affidavit of Work Authorization already on file with the State of Missouri. If completing Box B, do not complete Box C.) - BOX B - CURRENT BUSINESS ENTITY STATUS, (Complete the following if you have the E-Verify documentation and a current Affidavit of Work Authorization already on file with the State of Missouri. If completing Box C, do not complete Box B.) - BOX C - AFFIDAVIT ON FILE - CURRENT BUSINESS ENTITY STATUS, (Complete the following if you have the E-Verify documentation and a current Affidavit of Work Authorization already on file with the State of Missouri. If completing Box C, do not complete Box B.) - FOR STATE USE ONLY, AGREEMENT FOR CONTRACTED SERVICES\nHazelwood School District - Note:, PROPOSAL SUBMITTALS - Check List",
+      "d. Through narrative discussion, show reason why the Company believes it is especially qualified to undertake this project. Discuss any unique qualifications that the Company possesses which would be of a benefit to the District in the execution of this project.",
+      "Indicate any areas where the district's information technology could be assessed or improved through an audit process, including items not specified in 7.1 through 7.5.",
+      "Describe data that will need to be provided by the District to assist in the analysis and projections.",
+      "A sample technology audit report from a previous client (with confidential information redacted)",
+      "Proposers understanding of and ability to address the RFP requirements",
+      "Project approach: Logical, organized, innovative understanding, and experience with similar projects"
+    ],
+    "required_documents_categorized": {
+      "all_documents": [
+        "HSD Attachment 1, Company Identification Form",
+        "Attachment 2, References and Experience",
+        "HSD Sample technology audit report from a previous client (with confidential information redacted)",
+        "HSD Company Identification Form",
+        "Proposal",
+        "Authorized Signature",
+        "Certification of no 'PARTIES OF INTEREST' or 'CONFLICTS OF INTEREST'",
+        "E-Verify affidavit",
+        "OSHA construction safety program documentation",
+        "Client References",
+        "Business Entity Certification",
+        "Enrollment Documentation",
+        "Affidavit of Work Authorization",
+        "Box B documentation",
+        "Box R documentation",
+        "E-Verify Employment Eligibility Verification page",
+        "E-Verify Memorandum of Understanding (MOU)",
+        "E-Verify Memorandum of Understanding (MOU) listing the consultant's/contractor's name and the MOU signature page",
+        "Current, notarized Affidavit of Work Authorization",
+        "E-Verify documentation",
+        "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+        "HSD FORM B - MBE/WBE Subcontractor Solicitation Form",
+        "E-Verify Affidavits",
+        "Completed W-9"
+      ],
+      "categorized": {
+        "forms": [
+          "HSD Attachment 1, Company Identification Form",
+          "Attachment 2, References and Experience",
+          "HSD Sample technology audit report from a previous client (with confidential information redacted)",
+          "HSD Company Identification Form",
+          "HSD FORM A - MBE/WBE Subcontractor Utilization Form",
+          "HSD FORM B - MBE/WBE Subcontractor Solicitation Form"
+        ],
+        "certifications": [
+          "Certification of no 'PARTIES OF INTEREST' or 'CONFLICTS OF INTEREST'",
+          "E-Verify affidavit",
+          "Business Entity Certification",
+          "E-Verify Employment Eligibility Verification page",
+          "E-Verify Memorandum of Understanding (MOU)",
+          "E-Verify Memorandum of Understanding (MOU) listing the consultant's/contractor's name and the MOU signature page",
+          "E-Verify documentation",
+          "E-Verify Affidavits"
+        ],
+        "reports": [],
+        "references": [
+          "Client References"
+        ],
+        "legal": [
+          "Affidavit of Work Authorization",
+          "Current, notarized Affidavit of Work Authorization"
+        ],
+        "other": [
+          "Proposal",
+          "Authorized Signature",
+          "OSHA construction safety program documentation",
+          "Enrollment Documentation",
+          "Box B documentation",
+          "Box R documentation",
+          "Completed W-9"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "id": "a9ed2875-60b7-453c-ad80-7510af0fab8d",
+  "name": "MHMR",
+  "company": "Temporary Staffing Services",
+  "status": "Complete",
+  "date": "2025-04-06T07:58:56.506Z",
+  "pdfFileName": "rfp_a9ed2875-60b7-453c-ad80-7510af0fab8d.pdf",
+  "companyFileName": "company_a9ed2875-60b7-453c-ad80-7510af0fab8d.pdf",
+  "eligibility": {
+    "matches": [],
+    "mismatches": []
+  },
+  "checklist": [
+    {
+      "category": "required_documents",
+      "items": [
+        {
+          "item": "related documents",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "eligibility_criteria",
+      "items": []
+    },
+    {
+      "category": "proposal",
+      "items": [
+        {
+          "item": "Proposals must be submitted by the specified closing date and time",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "No additional information will be released until after MHMR has completed evaluations for the submitted proposals and an award has been made and approved by Executive staff and MHMR's Board of Trustees, as applicable",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must be submitted in writing",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must be emailed to Randall Elder at mhmr.purchasing@mhmrtc.org",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Contractors are responsible for reviewing MHMR's website and retrieving all related documents prior to the RFP's due date",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must be signed in ink by an authorized person",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must be submitted in a sealed envelope",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must be addressed to the attention of: MHMR PROCUREMENT SERVICES, ATTN: RANDALL ELDER, 3840 HULEN STREET, SUITE 538, FORT WORTH, TEXAS 76107",
+          "status": "pending",
+          "required": false
+        },
+        {
+          "item": "Proposals must state RFP 25-008 TEMPORARY SERVICES DO NOT OPEN UNTIL THURSDAY, FEBRUARY 27, 2025, AT 2:00 P.M.",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "insurance",
+      "items": []
+    },
+    {
+      "category": "supplier_diversity_requirements",
+      "items": []
+    },
+    {
+      "category": "insights",
+      "items": [
+        {
+          "item": "Document contains sections: INVITATION - RFP 25-008 TEMPORARY STAFFING SERVICES, 3. GENERAL INSTRUCTIONS - 3.1 Questions, 3. GENERAL INSTRUCTIONS - 3.2 Proposal Submission",
+          "status": "pending",
+          "required": false
+        }
+      ]
+    },
+    {
+      "category": "required_documents_categorized",
+      "items": []
+    }
+  ],
+  "risks": [],
+  "aiAnalysis": {
+    "required_documents": [
+      "related documents"
+    ],
+    "eligibility_criteria": [],
+    "proposal": [
+      "Proposals must be submitted by the specified closing date and time",
+      "No additional information will be released until after MHMR has completed evaluations for the submitted proposals and an award has been made and approved by Executive staff and MHMR's Board of Trustees, as applicable",
+      "Proposals must be submitted in writing",
+      "Proposals must be emailed to Randall Elder at mhmr.purchasing@mhmrtc.org",
+      "Contractors are responsible for reviewing MHMR's website and retrieving all related documents prior to the RFP's due date",
+      "Proposals must be signed in ink by an authorized person",
+      "Proposals must be submitted in a sealed envelope",
+      "Proposals must be addressed to the attention of: MHMR PROCUREMENT SERVICES, ATTN: RANDALL ELDER, 3840 HULEN STREET, SUITE 538, FORT WORTH, TEXAS 76107",
+      "Proposals must state RFP 25-008 TEMPORARY SERVICES DO NOT OPEN UNTIL THURSDAY, FEBRUARY 27, 2025, AT 2:00 P.M."
+    ],
+    "insurance": [],
+    "supplier_diversity_requirements": [],
+    "insights": [
+      "Document contains sections: INVITATION - RFP 25-008 TEMPORARY STAFFING SERVICES, 3. GENERAL INSTRUCTIONS - 3.1 Questions, 3. GENERAL INSTRUCTIONS - 3.2 Proposal Submission"
+    ],
+    "required_documents_categorized": {
+      "all_documents": [
+        "related documents"
+      ],
+      "categorized": {
+        "forms": [],
+        "certifications": [],
+        "reports": [],
+        "references": [],
+        "legal": [],
+        "other": [
+          "related documents"
+        ]
+      }
+    }
+  }
+}

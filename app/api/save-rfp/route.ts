@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
+import { writeFile, mkdir, readFile } from 'fs/promises'
 import path from 'path'
 
 export async function POST(request: Request) {
@@ -7,49 +7,57 @@ export async function POST(request: Request) {
     const data = await request.json()
     
     // Ensure required fields are present
-    if (!data.id || !data.name || !data.company) {
+    if (!data.id) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing RFP ID' },
         { status: 400 }
       )
     }
 
-    // Create both directories if they don't exist
+    // Create directories if they don't exist
     const dataDir = path.join(process.cwd(), 'data', 'rfps')
-    const pdfDir = path.join(process.cwd(), 'data', 'pdfs')
-    
     await mkdir(dataDir, { recursive: true })
-    await mkdir(pdfDir, { recursive: true })
 
-    // Save RFP data
+    // Get existing data if any
+    let existingData = {}
     const filePath = path.join(dataDir, `${data.id}.json`)
+    try {
+      const fileContent = await readFile(filePath, 'utf-8')
+      existingData = JSON.parse(fileContent)
+    } catch (e) {
+      // File doesn't exist yet, that's ok
+    }
+
+    // Merge new data with existing data
+    const rfpData = {
+      ...existingData,
+      ...data,
+      pdfFileName: data.pdfFileName || existingData.pdfFileName,
+      companyFileName: data.companyFileName || existingData.companyFileName,
+      status: data.status || existingData.status || "Pending",
+      date: data.date || existingData.date || new Date().toISOString(),
+      eligibility: {
+        matches: data.eligibility?.matches || existingData.eligibility?.matches || [],
+        mismatches: data.eligibility?.mismatches || existingData.eligibility?.mismatches || []
+      },
+      checklist: data.checklist || existingData.checklist || [],
+      risks: data.risks || existingData.risks || []
+    }
+
+    // Save merged data
     await writeFile(
       filePath,
-      JSON.stringify({
-        id: data.id,
-        name: data.name,
-        company: data.company,
-        status: data.status || "Pending",
-        date: data.date || new Date().toISOString(),
-        pdfFileName: `rfp_${data.id}.pdf`,
-        eligibility: {
-          matches: data.analysis?.matches || [],
-          mismatches: data.analysis?.mismatches || []
-        },
-        checklist: data.analysis?.checklist || [],
-        risks: data.analysis?.risks || [],
-      }, null, 2)
+      JSON.stringify(rfpData, null, 2)
     )
 
-    return NextResponse.json({ 
-      success: true, 
-      id: data.id 
-    })
+    return NextResponse.json(rfpData)
   } catch (error) {
-    console.error('Save error:', error)
+    console.error('Failed to save RFP:', error)
     return NextResponse.json(
       { error: 'Failed to save RFP data' },
       { status: 500 }
     )
   }
 }
+
+

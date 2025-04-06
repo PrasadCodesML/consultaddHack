@@ -21,6 +21,7 @@ interface RFPData {
   status: string
   date: string
   pdfFileName?: string
+  companyFileName?: string
   eligibility: {
     matches: Array<{ requirement: string, details: string }>
     mismatches: Array<{ requirement: string, details: string }>
@@ -28,6 +29,11 @@ interface RFPData {
   }
   checklist: Array<{ item: string; status: string; required?: boolean }>
   risks: Array<{ clause: string; risk: string; suggestion: string }>
+  complianceResults?: {
+    matches: Array<{ requirement: string, details: string }>
+    mismatches: Array<{ requirement: string, details: string }>
+    rawReport?: string
+  }
 }
 
 interface RFPDetailClientProps {
@@ -92,5 +98,6 @@ export default function RFPDetailClient({ rfpData }: RFPDetailClientProps) {
     </div>
   )
 }
+
 
 

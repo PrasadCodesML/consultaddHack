@@ -5,19 +5,21 @@ import { join } from 'path'
 export async function POST(request: Request) {
   try {
     const data = await request.json()
-    const tempDir = join(process.cwd(), 'temp')
+    const analysisDir = join(process.cwd(), 'data', 'analysis')
     
-    // Create temp directory if it doesn't exist
-    try {
-      await mkdir(tempDir, { recursive: true })
-    } catch (error) {
-      // Directory might already exist
-    }
+    // Create analysis directory if it doesn't exist
+    await mkdir(analysisDir, { recursive: true })
 
-    const filename = `analysis-${Date.now()}.json`
+    const filename = `analysis_${data.rfpId}_${Date.now()}.json`
     await writeFile(
-      join(tempDir, filename),
-      JSON.stringify(data, null, 2)
+      join(analysisDir, filename),
+      JSON.stringify({
+        rfpId: data.rfpId,
+        analysis: data.analysis,
+        timestamp: data.timestamp,
+        checklist: data.analysis.checklist || [],
+        eligibility: data.analysis.eligibility || { matches: [], mismatches: [] }
+      }, null, 2)
     )
 
     return NextResponse.json({ success: true, filename })
