@@ -1,2 +1,3 @@
 flask
 PyMuPDF
+flask_cors

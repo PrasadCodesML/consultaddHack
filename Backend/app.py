@@ -3,8 +3,14 @@ import fitz  # PyMuPDF
 import os
 import re
 from datetime import datetime
-
+from flask_cors import CORS
 app = Flask(__name__)
+
+# Remove all other CORS configurations and just use this simple setup
+CORS(app, 
+     origins=["http://localhost:3000"],
+     allow_headers=["Content-Type"],
+     supports_credentials=True)
 
 def parse_company_text(text):
     def extract(field, is_list=False):
@@ -95,8 +101,11 @@ def compare(company, rfp):
 
     return "\n".join(lines)
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=["POST", "OPTIONS"])
 def index():
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"})
+
     if "company_pdf" not in request.files or "rfp_pdf" not in request.files:
         return jsonify({"error": "Both 'company_pdf' and 'rfp_pdf' files are required."}), 400
 

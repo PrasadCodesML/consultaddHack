@@ -29,16 +29,13 @@ export default function UploadPage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!rfpFile || isUploading) return
-
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
     setIsUploading(true)
-    
+    setProgress(0)
+
     try {
-      // Generate unique ID for the RFP
       const rfpId = crypto.randomUUID()
-      
       setProgress(10)
       
       // First, save the PDF file
@@ -57,30 +54,8 @@ export default function UploadPage() {
 
       setProgress(30)
 
-      // Now send to analysis API
-      const analysisFormData = new FormData()
-      analysisFormData.append('file', rfpFile)
-      analysisFormData.append('rfpId', rfpId)
-      analysisFormData.append('rfpName', formRef.current?.['rfp-name'].value)
-      analysisFormData.append('companyName', formRef.current?.['company-name'].value)
-
-      setProgress(40)
-
-      const analysisResponse = await fetch('https://Prasad8379-gradio-parase.hf.space/analyze-rfp/', {
-        method: 'POST',
-        body: analysisFormData,
-      })
-
-      if (!analysisResponse.ok) {
-        throw new Error('Analysis failed')
-      }
-
-      const analysisResult = await analysisResponse.json()
-
-      setProgress(70)
-
-      // Save complete RFP data
-      const saveResponse = await fetch('/api/save-rfp', {
+      // Save initial RFP data
+      const initialSaveResponse = await fetch('/api/save-rfp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,28 +64,60 @@ export default function UploadPage() {
           id: rfpId,
           name: formRef.current?.['rfp-name'].value,
           company: formRef.current?.['company-name'].value,
-          status: "Pending",
+          status: "Analyzing",
           date: new Date().toISOString(),
           pdfFileName: `rfp_${rfpId}.pdf`,
-          analysis: analysisResult,
+          eligibility: {
+            matches: [],
+            mismatches: [],
+          }
         }),
       })
 
-      if (!saveResponse.ok) {
-        throw new Error('Failed to save RFP data')
+      if (!initialSaveResponse.ok) {
+        throw new Error('Failed to save initial RFP data')
       }
 
+      setProgress(50)
+
+      // Prepare form data for Hugging Face - Changed field name to 'file'
+      const huggingFaceFormData = new FormData()
+      huggingFaceFormData.append('file', rfpFile) // Changed from 'rfp_pdf' to 'file'
+      
+      // Start Hugging Face analysis
+      const huggingFaceResponse = await fetch('https://prasad8379-gradio-parase.hf.space/analyze-rfp/', {
+        method: 'POST',
+        body: huggingFaceFormData,
+      })
+
+      if (!huggingFaceResponse.ok) {
+        const errorData = await huggingFaceResponse.json()
+        throw new Error(`Hugging Face analysis failed: ${JSON.stringify(errorData)}`)
+      }
+
+      const huggingFaceResult = await huggingFaceResponse.json()
+      
+      // Update RFP with Hugging Face analysis results
+      await fetch('/api/save-rfp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: rfpId,
+          status: "Complete",
+          aiAnalysis: huggingFaceResult
+        }),
+      })
+
       setProgress(100)
-      
-      // Wait a brief moment to show 100% progress
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
       router.push(`/rfp/${rfpId}`)
+
     } catch (error) {
       console.error('Upload error:', error)
       toast({
         title: "Error",
-        description: "Failed to upload and analyze RFP",
+        description: error.message || "Failed to upload and analyze RFP",
         variant: "destructive",
       })
       setIsUploading(false)
@@ -222,6 +229,14 @@ export default function UploadPage() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
 
 
 

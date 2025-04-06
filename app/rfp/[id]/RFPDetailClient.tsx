@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle2, XCircle, AlertTriangle, Download, FileText, X } from "lucide-react"
@@ -22,8 +22,9 @@ interface RFPData {
   date: string
   pdfFileName?: string
   eligibility: {
-    matches: Array<{ requirement: string }>
-    mismatches: Array<{ requirement: string }>
+    matches: Array<{ requirement: string, details: string }>
+    mismatches: Array<{ requirement: string, details: string }>
+    rawReport?: string
   }
   checklist: Array<{ item: string; status: string; required?: boolean }>
   risks: Array<{ clause: string; risk: string; suggestion: string }>
@@ -91,3 +92,5 @@ export default function RFPDetailClient({ rfpData }: RFPDetailClientProps) {
     </div>
   )
 }
+
+

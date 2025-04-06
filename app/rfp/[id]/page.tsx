@@ -23,13 +23,12 @@ interface RFPData {
   date: string
   pdfFileName?: string
   eligibility: {
-    matches: Array<{ requirement: string }>
-    mismatches: Array<{ requirement: string }>
+    matches: Array<{ requirement: string; details: string }>
+    mismatches: Array<{ requirement: string; details: string }>
   }
   checklist: Array<{ item: string; status: string; required?: boolean }>
   risks: Array<{ clause: string; risk: string; suggestion: string }>
 }
-
 
 export default function RFPDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -58,10 +57,29 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
         const data = await response.json()
         console.log('Fetched RFP data:', data) // Add this for debugging
         setRfpData(data)
-        setLoading(false)
+        
+        // If status is "Analyzing", poll for updates
+        if (data.status === "Analyzing") {
+          const pollInterval = setInterval(async () => {
+            const pollResponse = await fetch(`/api/rfps/${id}`)
+            if (pollResponse.ok) {
+              const updatedData = await pollResponse.json()
+              setRfpData(updatedData)
+              
+              // Stop polling once analysis is complete or failed
+              if (["Complete", "Analysis Failed"].includes(updatedData.status)) {
+                clearInterval(pollInterval)
+              }
+            }
+          }, 5000) // Poll every 5 seconds
+
+          // Cleanup interval on unmount
+          return () => clearInterval(pollInterval)
+        }
       } catch (err) {
         console.error('Failed to fetch RFP data:', err)
-        setError('Failed to load RFP data')
+        setError(err.message)
+      } finally {
         setLoading(false)
       }
     }
@@ -264,8 +282,8 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
         <TabsContent value="eligibility" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Eligibility Analysis</CardTitle>
-              <CardDescription>Assessment of company eligibility for RFP submission</CardDescription>
+              <CardTitle>Compliance Report</CardTitle>
+              <CardDescription>Detailed analysis of company compliance with RFP requirements</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -278,7 +296,10 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
                         className="flex items-center gap-2 p-2 rounded-md bg-green-50 dark:bg-green-950/20"
                       >
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
-                        <span>{item.requirement}</span>
+                        <div>
+                          <span className="font-medium">{item.requirement}</span>
+                          <p className="text-sm text-muted-foreground">{item.details}</p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -288,9 +309,15 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
                   <h3 className="text-lg font-medium mb-3">Unmatched Requirements</h3>
                   <div className="space-y-2">
                     {rfpData.eligibility.mismatches.map((item, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 rounded-md bg-red-50 dark:bg-red-950/20">
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 p-2 rounded-md bg-red-50 dark:bg-red-950/20"
+                      >
                         <XCircle className="h-5 w-5 text-red-500" />
-                        <span>{item.requirement}</span>
+                        <div>
+                          <span className="font-medium">{item.requirement}</span>
+                          <p className="text-sm text-muted-foreground">{item.details}</p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -300,10 +327,10 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
                   <div className="flex items-start gap-2">
                     <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
                     <div>
-                      <h4 className="font-medium">Eligibility Assessment</h4>
+                      <h4 className="font-medium">Compliance Assessment</h4>
                       <p className="text-sm">
-                        Your company meets 4 out of 5 requirements. The missing requirement (Local office presence) may
-                        be addressed by partnering with a local firm or establishing a temporary project office.
+                        Your company matches {rfpData.eligibility.matches.length} out of {rfpData.eligibility.matches.length + rfpData.eligibility.mismatches.length} requirements.
+                        {rfpData.eligibility.mismatches.length > 0 && ' Please address the unmatched requirements before submission.'}
                       </p>
                     </div>
                   </div>
@@ -441,3 +468,5 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
     </div>
   )
 }
+
+
