@@ -31,65 +31,83 @@ export default function UploadPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!rfpFile) {
-      toast({
-        title: "Error",
-        description: "Please select an RFP document",
-        variant: "destructive",
-      })
-      return
-    }
-
     setIsUploading(true)
     setProgress(0)
-
+    
     try {
+      // Generate unique ID for the RFP
+      const rfpId = crypto.randomUUID()
+      
+      // Start progress animation
+      setProgress(10)
+      
       // First, save the PDF file
       const pdfFormData = new FormData()
       pdfFormData.append('file', rfpFile)
+      pdfFormData.append('rfpId', rfpId)
       
-      // Save PDF to local storage (you'll need to implement this API endpoint)
-      await fetch('/api/upload-pdf', {
+      // Save PDF with unique name based on rfpId
+      const pdfFileName = `rfp_${rfpId}.pdf`
+      const pdfResponse = await fetch('/api/upload-pdf', {
         method: 'POST',
         body: pdfFormData,
       })
 
+      if (!pdfResponse.ok) {
+        throw new Error('Failed to upload PDF')
+      }
+
       setProgress(30)
 
-      // Now send to analysis API
+      // Now send to analysis API with metadata
       const analysisFormData = new FormData()
       analysisFormData.append('file', rfpFile)
+      analysisFormData.append('rfpId', rfpId)
+      analysisFormData.append('rfpName', formRef.current?.['rfp-name'].value)
+      analysisFormData.append('companyName', formRef.current?.['company-name'].value)
 
-      const response = await fetch('https://Prasad8379-gradio-parase.hf.space/analyze-rfp/', {
+      setProgress(40)
+
+      const analysisResponse = await fetch('https://Prasad8379-gradio-parase.hf.space/analyze-rfp/', {
         method: 'POST',
         body: analysisFormData,
       })
 
-      if (!response.ok) {
+      if (!analysisResponse.ok) {
         throw new Error('Analysis failed')
       }
 
       setProgress(70)
 
-      const analysisResult = await response.json()
+      const analysisResult = await analysisResponse.json()
 
-      // Save analysis result to temp directory (you'll need to implement this API endpoint)
-      await fetch('/api/save-analysis', {
+      // Save complete RFP data
+      const saveResponse = await fetch('/api/save-rfp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          rfpName: formRef.current?.['rfp-name'].value,
-          companyName: formRef.current?.['company-name'].value,
+          id: rfpId,
+          name: formRef.current?.['rfp-name'].value,
+          company: formRef.current?.['company-name'].value,
+          status: "Pending",
+          date: new Date().toISOString(),
+          pdfFileName,
           analysis: analysisResult,
         }),
       })
 
+      if (!saveResponse.ok) {
+        throw new Error('Failed to save RFP data')
+      }
+
       setProgress(100)
 
-      // Redirect to the RFP detail page
-      router.push(`/rfp/${analysisResult.id || '6'}`)
+      // Wait a brief moment to show 100% progress
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      router.push(`/rfp/${rfpId}`)
     } catch (error) {
       console.error('Upload error:', error)
       toast({
@@ -98,6 +116,7 @@ export default function UploadPage() {
         variant: "destructive",
       })
       setIsUploading(false)
+      setProgress(0)
     }
   }
 
@@ -205,5 +224,7 @@ export default function UploadPage() {
     </div>
   )
 }
+
+
 
 

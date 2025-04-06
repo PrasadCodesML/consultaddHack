@@ -1,0 +1,28 @@
+{
+  "name": "Sample RFP",
+  "company": "Test Company",
+  "status": "Eligible",
+  "date": "2024-01-01",
+  "eligibility": {
+    "matches": [
+      { "requirement": "5+ years experience" },
+      { "requirement": "ISO 9001 Certification" }
+    ],
+    "mismatches": [
+      { "requirement": "Local office presence" }
+    ]
+  },
+  "checklist": [
+    { "item": "Technical Proposal", "status": "complete" },
+    { "item": "Financial Proposal", "status": "pending" }
+  ],
+  "risks": [
+    {
+      "clause": "Payment Terms",
+      "risk": "Medium",
+      "suggestion": "Request modification to net-30 payment terms"
+    }
+  ],
+  "rfpName": "Sample Project RFP",
+  "pdfFileName": "sample-rfp.pdf"
+}

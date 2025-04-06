@@ -1,11 +1,11 @@
-"use client"
-import { use } from "react"
-import { useState } from "react"
+'use client'
+
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, XCircle, AlertTriangle, Download, FileText, X } from "lucide-react"
+import { CheckCircle2, XCircle, AlertTriangle, Download, FileText } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -15,60 +15,50 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 
-export default function RFPDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params) // Unwrap the params Promise
-  const [activeTab, setActiveTab] = useState("eligibility")
-  const [showRfpDialog, setShowRfpDialog] = useState(false)
-
-  // Sample data for demonstration
-  const rfpData = {
-    id: resolvedParams.id, // Use the unwrapped params
-    name: "City Infrastructure Project",
-    company: "BuildTech Solutions",
-    status: "Eligible",
-    date: "2025-04-01",
-    eligibility: {
-      matches: [
-        { requirement: "ISO 9001 Certification", status: "match" },
-        { requirement: "Minimum 5 years experience", status: "match" },
-        { requirement: "Previous government contracts", status: "match" },
-        { requirement: "Liability insurance ($2M)", status: "match" },
-      ],
-      mismatches: [{ requirement: "Local office presence", status: "mismatch" }],
-    },
-    checklist: [
-      { item: "Technical proposal", required: true, status: "complete" },
-      { item: "Financial proposal", required: true, status: "complete" },
-      { item: "Company profile", required: true, status: "complete" },
-      { item: "References", required: true, status: "incomplete" },
-      { item: "Project timeline", required: true, status: "complete" },
-      { item: "Risk assessment", required: false, status: "incomplete" },
-    ],
-    risks: [
-      {
-        clause: "Section 3.4: Contractor shall be responsible for all unforeseen conditions",
-        risk: "High",
-        suggestion: "Request modification to limit liability to reasonable unforeseen conditions",
-      },
-      {
-        clause: "Section 5.2: Client may terminate contract at any time with 7 days notice",
-        risk: "Medium",
-        suggestion: "Negotiate for longer notice period and/or partial compensation",
-      },
-      {
-        clause: "Section 8.1: All intellectual property created during project belongs to client",
-        risk: "Low",
-        suggestion: "Acceptable standard clause, no action needed",
-      },
-    ],
+interface RFPData {
+  name: string
+  company: string
+  status: string
+  date: string
+  pdfFileName?: string
+  eligibility: {
+    matches: Array<{ requirement: string }>
+    mismatches: Array<{ requirement: string }>
   }
+  checklist: Array<{ item: string; status: string; required?: boolean }>
+  risks: Array<{ clause: string; risk: string; suggestion: string }>
+}
 
-  // Function to generate and download PDF report
+export default function RFPDetailPage({ params }: { params: { id: string } }) {
+  const [rfpData, setRfpData] = useState<RFPData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [showRfpDialog, setShowRfpDialog] = useState(false)
+  const [activeTab, setActiveTab] = useState("eligibility")
+
+  useEffect(() => {
+    const fetchRFPData = async () => {
+      try {
+        const response = await fetch(`/api/rfps/${params.id}`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setRfpData(data)
+        setLoading(false)
+      } catch (err) {
+        console.error('Failed to fetch RFP data:', err)
+        setError('Failed to load RFP data')
+        setLoading(false)
+      }
+    }
+
+    fetchRFPData()
+  }, [params.id])
+
   const handleExportReport = () => {
-    // In a real application, you would use a library like jsPDF or react-pdf
-    // For this demo, we'll simulate a PDF download
+    if (!rfpData) return
 
-    // Create a text representation of the report
     const reportContent = `
       RFP ANALYSIS REPORT
       
@@ -92,31 +82,25 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
       RISK ANALYSIS
       
       ${rfpData.risks.map((item) => `- ${item.clause} (${item.risk} Risk)\n  Suggestion: ${item.suggestion}`).join("\n\n")}
-      
-      FLAGS
-      
-      - WARNING: Bank Letter of Creditworthiness not available
-      - ISSUE: No MBE Certification
-      - VERIFIED: Certificate of Insurance verified
     `
 
-    // Create a Blob with the text content
     const blob = new Blob([reportContent], { type: "text/plain" })
-
-    // Create a download link and trigger the download
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = `${rfpData.name.replace(/\s+/g, "-").toLowerCase()}-report.txt`
+    link.download = `${rfpData.name.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").toLowerCase()}-report.txt`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+  }
 
-    // In a real application, you would generate a proper PDF here
-    alert(
-      "In a real application, this would download a properly formatted PDF report with all flags and analysis data.",
-    )
+  if (loading) {
+    return <div className="container mx-auto py-6">Loading...</div>
+  }
+
+  if (error || !rfpData) {
+    return <div className="container mx-auto py-6">Error: {error || 'Failed to load RFP data'}</div>
   }
 
   return (
@@ -137,35 +121,32 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
             >
               {rfpData.status}
             </Badge>
-            <span className="text-sm text-muted-foreground">
-              Uploaded on {new Date(rfpData.date).toLocaleDateString()}
-            </span>
-          </div>
+            <Badge variant="outline">{rfpData.date}</Badge>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportReport}>
-            <Download className="mr-2 h-4 w-4" />
-            Export Report
+          <Button variant="outline" size="sm" onClick={() => setShowRfpDialog(true)}>
+            <FileText className="h-4 w-4 mr-2" />
+            View Original
           </Button>
-          <Button variant="outline" onClick={() => setShowRfpDialog(true)}>
-            <FileText className="mr-2 h-4 w-4" />
-            View Original RFP
+          <Button size="sm" onClick={handleExportReport}>
+            <Download className="h-4 w-4 mr-2" />
+            Export Report
           </Button>
         </div>
       </div>
 
-      <Tabs defaultValue="eligibility" className="space-y-4" onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="eligibility">Bid Eligibility</TabsTrigger>
-          <TabsTrigger value="checklist">Submission Checklist</TabsTrigger>
+          <TabsTrigger value="eligibility">Eligibility</TabsTrigger>
+          <TabsTrigger value="checklist">Checklist</TabsTrigger>
           <TabsTrigger value="risk">Risk Analysis</TabsTrigger>
         </TabsList>
 
         <TabsContent value="eligibility" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Eligibility Matching</CardTitle>
-              <CardDescription>Comparison between RFP requirements and company qualifications</CardDescription>
+              <CardTitle>Eligibility Analysis</CardTitle>
+              <CardDescription>Assessment of company eligibility for RFP submission</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -283,96 +264,47 @@ export default function RFPDetailPage({ params }: { params: Promise<{ id: string
                     <div>
                       <h4 className="font-medium">Risk Assessment</h4>
                       <p className="text-sm">
-                        We've identified 1 high-risk clause and 1 medium-risk clause that may require negotiation.
-                        Consider addressing these before submitting your proposal.
+                        We've identified 1 high-risk clause. Please review and consider negotiating terms to reduce potential exposure.
                       </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
-      {/* Original RFP Document Dialog */}
-      <Dialog open={showRfpDialog} onOpenChange={setShowRfpDialog}>
-        <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle>Original RFP Document</DialogTitle>
-            <DialogDescription>{rfpData.name} - Issued by City of Metropolis</DialogDescription>
-            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
+        {/* View Original RFP Dialog */}
+        {/* Dialog to preview the original RFP PDF */}
+        <Dialog open={showRfpDialog} onOpenChange={setShowRfpDialog}>
+          <DialogContent className="max-w-4xl h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Original RFP Document</DialogTitle>
+              <DialogDescription>
+                Preview of the uploaded RFP file.
+              </DialogDescription>
+            </DialogHeader>
+            {rfpData.pdfFileName ? (
+              <iframe
+                src={`/api/pdf/${rfpData.pdfFileName}`}
+                title="RFP PDF Preview"
+                className="w-full h-full border rounded"
+              />
+            ) : (
+              <div className="text-center py-10 text-sm text-muted-foreground">
+                No RFP PDF uploaded for this entry.
+              </div>
+            )}
+            <DialogClose asChild>
+              <Button className="absolute right-4 top-4" size="sm" variant="ghost">
+                Close
+              </Button>
             </DialogClose>
-          </DialogHeader>
-
-          <div className="flex-1 overflow-auto border rounded-md p-6 bg-white">
-            <div className="max-w-3xl mx-auto space-y-6">
-              <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold mb-2">REQUEST FOR PROPOSAL</h1>
-                <h2 className="text-xl font-semibold mb-1">City Infrastructure Project</h2>
-                <p className="text-sm text-muted-foreground">RFP #: CITY-2025-003</p>
-                <p className="text-sm text-muted-foreground">Issue Date: March 15, 2025</p>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">1. INTRODUCTION</h3>
-                <p>
-                  The City of Metropolis ("City") is seeking proposals from qualified contractors to provide
-                  infrastructure improvement services for the downtown area. This project includes road resurfacing,
-                  sidewalk repairs, and utility upgrades.
-                </p>
-
-                <h3 className="text-lg font-semibold">2. SCOPE OF WORK</h3>
-                <p>The selected contractor will be responsible for the following:</p>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li>Resurfacing approximately 3.5 miles of city streets</li>
-                  <li>Repairing and replacing damaged sidewalks</li>
-                  <li>Upgrading water and sewer lines</li>
-                  <li>Installing new street lighting</li>
-                  <li>Implementing traffic control measures during construction</li>
-                </ul>
-
-                <h3 className="text-lg font-semibold">3. QUALIFICATIONS</h3>
-                <p>Bidders must meet the following minimum qualifications:</p>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li>ISO 9001 Certification</li>
-                  <li>Minimum 5 years experience in municipal infrastructure projects</li>
-                  <li>Previous government contracts of similar scope and size</li>
-                  <li>Liability insurance ($2M minimum coverage)</li>
-                  <li>Local office presence within city limits</li>
-                </ul>
-
-                <h3 className="text-lg font-semibold">4. SUBMISSION REQUIREMENTS</h3>
-                <p>All proposals must include:</p>
-                <ul className="list-disc pl-6 space-y-1">
-                  <li>Technical proposal</li>
-                  <li>Financial proposal</li>
-                  <li>Company profile</li>
-                  <li>References from similar projects</li>
-                  <li>Project timeline</li>
-                  <li>Risk assessment (optional)</li>
-                </ul>
-
-                <h3 className="text-lg font-semibold">5. TERMS AND CONDITIONS</h3>
-                <p>
-                  <strong>Section 3.4:</strong> Contractor shall be responsible for all unforeseen conditions
-                  encountered during the project execution.
-                </p>
-                <p>
-                  <strong>Section 5.2:</strong> Client may terminate contract at any time with 7 days notice.
-                </p>
-                <p>
-                  <strong>Section 8.1:</strong> All intellectual property created during project belongs to client.
-                </p>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   )
 }
-
 
